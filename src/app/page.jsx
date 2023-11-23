@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Todo from "./model/Todo";
-import mongoose from "mongoose";
+import dbConnect from "./utils/dbConnect";
+import { redirect } from "next/navigation";
 
 export default function Home() {
   async function createTodo(data) {
@@ -9,18 +9,19 @@ export default function Home() {
     let todo = data.get("todo")?.valueOf();
 
     try {
-      await mongoose.connect(process.env.MONGO_URI, {});
-
+      dbConnect();
       let newTodo = new Todo({ title, todo });
       await newTodo.save();
       console.log(newTodo);
     } catch (error) {
       console.log(error);
     }
+
+    redirect("/show");
   }
 
   return (
-    <main className="m-10 apsce-y-5">
+    <main className="m-10 space-y-5">
       <h1 className="text-xl font-b">Create Todo</h1>
       <form action={createTodo}>
         <div className="">
